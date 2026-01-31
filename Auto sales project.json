@@ -1,0 +1,294 @@
+{
+  "name": "Auto sales project",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            },
+            {
+              "field": "seconds",
+              "secondsInterval": 10
+            },
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        16
+      ],
+      "id": "280be4bd-47ac-4217-b465-838341cd9252",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "subject": "daily report ",
+        "emailType": "text",
+        "message": "=your message ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        928,
+        -176
+      ],
+      "id": "b0ea049e-6505-4bf9-a25f-3c63bf14cfaa",
+      "name": "Send a message"
+       },
+      {
+     "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ef4a321c-0a88-411d-8a42-291e90b21d30",
+              "leftValue": "={{$json[\"payment status\"]}}",
+
+              "rightValue": "=paid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        16
+      ],
+      "id": "e89e65d8-0e21-4702-b747-a54b82263280",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "subject": "daily report",
+        "message": "=your message",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        928,
+        16
+      ],
+      "id": "0c109614-a557-4122-849d-6411cb3e302f",
+      "name": "Send a message1"
+      },
+    {
+      "parameters": {
+        "subject": "daily report",
+        "emailType": "text",
+        "message": "=your message",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        928,
+        208
+      ],
+      "id": "a8ba7ec6-33df-4b1c-a4ae-72116a577630",
+      "name": "Send a message2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        256,
+        16
+      ],
+      "id": "f11e0efc-3bb9-4b8b-a587-6ebcef134d85",
+      "name": "Get row(s) in sheet"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json[\"payment status\"]}}",
+
+                    "rightValue": "empty",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+
+                    },
+                    "id": "62cd2f7b-fd6e-4cd9-8f54-b2f2c201c0ed"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fd9cf282-2f4b-43bd-ae9a-92ace560a97e",
+                    "leftValue": "={{$json[\"payment status\"]}}",
+
+                    "rightValue": "half due",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d69f64a0-8278-4579-b25b-1a3b4a0321d8",
+                    "leftValue": "={{$json[\"payment status\"]}}",
+
+                    "rightValue": "paid",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        0
+      ],
+      "id": "e3debd20-56b7-469b-99d9-596cfc2dffa4",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c175af34-5bc1-472d-983e-21057062c3f3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "id": "ZRNFz6Z4aKgwArFO",
+  "tags": []
+}
